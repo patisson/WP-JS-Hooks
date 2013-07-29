@@ -10,7 +10,7 @@
 		/**
 		 * Maintain a reference to the object scope so our public methods never get confusing.
 		 */
-		var SELF = {
+		var MethodsAvailable = {
 			removeFilter : removeFilter,
 			applyFilters : applyFilters,
 			addFilter : addFilter,
@@ -37,12 +37,12 @@
 		 */
 		function addAction( action, callback, priority ) {
 			if( _validateNamespace( action ) === false || typeof callback !== 'function' ) {
-				return SELF;
+				return MethodsAvailable;
 			}
 
 			priority = parseInt( ( priority || 10 ), 10 );
 			_addHook( 'actions', action, callback, priority );
-			return SELF;
+			return MethodsAvailable;
 		}
 
 		/**
@@ -54,12 +54,12 @@
 			var action = args.shift();
 
 			if( _validateNamespace( action ) === false ) {
-				return SELF;
+				return MethodsAvailable;
 			}
 
 			_runHook( 'actions', action, args );
 
-			return SELF;
+			return MethodsAvailable;
 		}
 
 		/**
@@ -69,11 +69,11 @@
 		 */
 		function removeAction( action ) {
 			if( _validateNamespace( action ) === false ) {
-				return SELF;
+				return MethodsAvailable;
 			}
 
 			_removeHook( 'actions', action );
-			return SELF;
+			return MethodsAvailable;
 		}
 
 		/**
@@ -85,12 +85,12 @@
 		 */
 		function addFilter( filter, callback, priority ) {
 			if( _validateNamespace( filter ) === false || typeof callback !== 'function' ) {
-				return SELF;
+				return MethodsAvailable;
 			}
 
 			priority = parseInt( ( priority || 10 ), 10 );
 			_addHook( 'filters', filter, callback, priority );
-			return SELF;
+			return MethodsAvailable;
 		}
 
 		/**
@@ -103,7 +103,7 @@
 			var filter = args.shift();
 
 			if( _validateNamespace( filter ) === false ) {
-				return SELF;
+				return MethodsAvailable;
 			}
 
 			return _runHook( 'filters', filter, args );
@@ -116,11 +116,11 @@
 		 */
 		function removeFilter( filter ) {
 			if( _validateNamespace( filter ) === false ) {
-				return SELF;
+				return MethodsAvailable;
 			}
 
 			_removeHook( 'filters', filter );
-			return SELF;
+			return MethodsAvailable;
 		}
 
 		/**
@@ -238,7 +238,7 @@
 		}
 
 		// return all of the publicly available methods
-		return SELF;
+		return MethodsAvailable;
 
 	};
 	

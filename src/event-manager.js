@@ -8,9 +8,16 @@
 	 */
 	var EventManager = function() {
 		/**
-		 * Maintain a reference to the object scope so 'this' never becomes confusing.
+		 * Maintain a reference to the object scope so our public methods never get confusing.
 		 */
-		var SELF = this;
+		var SELF = {
+			removeFilter : removeFilter,
+			applyFilters : applyFilters,
+			addFilter : addFilter,
+			removeAction : removeAction,
+			doAction : doAction,
+			addAction : addAction
+		};
 
 		/**
 		 * Contains the hooks that get registered with this EventManager. The array for storage utilizes a "flat"
@@ -230,14 +237,8 @@
 			return args[ 0 ];
 		}
 
-		return {
-			removeFilter : removeFilter,
-			applyFilters : applyFilters,
-			addFilter : addFilter,
-			removeAction : removeAction,
-			doAction : doAction,
-			addAction : addAction
-		};
+		// return all of the publicly available methods
+		return SELF;
 
 	};
 	

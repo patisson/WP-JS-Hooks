@@ -28,7 +28,7 @@
 		 * @param callback Must be a valid callback function before this action is added
 		 * @param priority Defaults to 10
 		 */
-		SELF.addAction = function( action, callback, priority ) {
+		function addAction( action, callback, priority ) {
 			if( _validateNamespace( action ) === false || typeof callback !== 'function' ) {
 				return SELF;
 			}
@@ -36,13 +36,13 @@
 			priority = parseInt( ( priority || 10 ), 10 );
 			_addHook( 'actions', action, callback, priority );
 			return SELF;
-		};
+		}
 
 		/**
 		 * Performs an action if it exists. You can pass as many arguments as you want to this function; the only rule is
 		 * that the first argument must always be the action.
 		 */
-		SELF.doAction = function( /* action, arg1, arg2, ... */ ) {
+		function doAction( /* action, arg1, arg2, ... */ ) {
 			var args = Array.prototype.slice.call( arguments );
 			var action = args.shift();
 
@@ -53,21 +53,21 @@
 			_runHook( 'actions', action, args );
 
 			return SELF;
-		};
+		}
 
 		/**
 		 * Removes the specified action if it contains a namespace.identifier & exists.
 		 *
 		 * @param action The action to remove
 		 */
-		SELF.removeAction = function( action ) {
+		function removeAction( action ) {
 			if( _validateNamespace( action ) === false ) {
 				return SELF;
 			}
 
 			_removeHook( 'actions', action );
 			return SELF;
-		};
+		}
 
 		/**
 		 * Adds a filter to the event manager.
@@ -76,7 +76,7 @@
 		 * @param callback Must be a valid callback function before this action is added
 		 * @param priority Defaults to 10
 		 */
-		SELF.addFilter = function( filter, callback, priority ) {
+		function addFilter( filter, callback, priority ) {
 			if( _validateNamespace( filter ) === false || typeof callback !== 'function' ) {
 				return SELF;
 			}
@@ -84,37 +84,37 @@
 			priority = parseInt( ( priority || 10 ), 10 );
 			_addHook( 'filters', filter, callback, priority );
 			return SELF;
-		};
+		}
 
 		/**
 		 * Performs a filter if it exists. You should only ever pass 1 argument to be filtered. The only rule is that
 		 * the first argument must always be the filter.
 		 */
-		SELF.applyFilters = function( /* filter, filtered arg, arg2, ... */ ) {
-			
+		function applyFilters( /* filter, filtered arg, arg2, ... */ ) {
+
 			var args = Array.prototype.slice.call( arguments );
 			var filter = args.shift();
-			
+
 			if( _validateNamespace( filter ) === false ) {
 				return SELF;
 			}
 
 			return _runHook( 'filters', filter, args );
-		};
+		}
 
 		/**
 		 * Removes the specified filter if it contains a namespace.identifier & exists.
 		 *
 		 * @param filter The action to remove
 		 */
-		SELF.removeFilter = function( filter ) {
+		function removeFilter( filter ) {
 			if( _validateNamespace( filter ) === false ) {
 				return SELF;
 			}
 
 			_removeHook( 'filters', filter );
 			return SELF;
-		};
+		}
 
 		/**
 		 * Removes the specified hook by resetting the value of it.
@@ -123,11 +123,11 @@
 		 * @param hook The hook (namespace.identifier) to remove
 		 * @private
 		 */
-		var _removeHook = function( type, hook ) {
+		function _removeHook( type, hook ) {
 			if( STORAGE[ type ][ hook ] ) {
 				STORAGE[ type ][ hook ] = [];
 			}
-		};
+		}
 
 		/**
 		 * Validates that the hook has both a namespace and an identifier.
@@ -136,7 +136,7 @@
 		 * @return {Boolean} False if it does not contain both or is incorrect. True if it has an appropriate namespace & identifier.
 		 * @private
 		 */
-		var _validateNamespace = function( hook ) {
+		function _validateNamespace( hook ) {
 			if( typeof hook !== 'string' ) {
 				return false;
 			}
@@ -145,7 +145,7 @@
 			identifier = identifier.join( '.' );
 
 			return ( namespace !== '' && identifier !== '' );
-		};
+		}
 
 		/**
 		 * Adds the hook to the appropriate storage container
@@ -156,7 +156,7 @@
 		 * @param priority The priority of this hook. Must be an integer.
 		 * @private
 		 */
-		var _addHook = function( type, hook, callback, priority ) {
+		function _addHook( type, hook, callback, priority ) {
 			var hookObject = {
 				callback : callback,
 				priority : priority
@@ -173,7 +173,7 @@
 			}
 
 			STORAGE[ type ][ hook ] = hooks;
-		};
+		}
 
 		/**
 		 * Use an insert sort for keeping our hooks organized based on priority. This function is ridiculously faster
@@ -182,7 +182,7 @@
 		 * @param hooks The custom array containing all of the appropriate hooks to perform an insert sort on.
 		 * @private
 		 */
-		var _hookInsertSort = function( hooks ) {
+		function _hookInsertSort( hooks ) {
 			var tmpHook, j, prevHook;
 			for( var i = 1, len = hooks.length; i < len; i++ ) {
 				tmpHook = hooks[ i ];
@@ -195,7 +195,7 @@
 			}
 
 			return hooks;
-		};
+		}
 
 		/**
 		 * Runs the specified hook. If it is an action, the value is not modified but if it is a filter, it is.
@@ -205,7 +205,7 @@
 		 * @param args Arguments to pass to the action/filter. If it's a filter, args is actually a single parameter.
 		 * @private
 		 */
-		var _runHook = function( type, hook, args ) {
+		function _runHook( type, hook, args ) {
 			var hooks = STORAGE[ type ][ hook ];
 			if( typeof hooks === 'undefined' ) {
 				if( type === 'filters' ) {
@@ -219,7 +219,7 @@
 					hooks[ i ].callback.apply( undefined, args );
 				}
 				else {
-					args[0] = hooks[ i ].callback.apply( undefined, args );
+					args[ 0 ] = hooks[ i ].callback.apply( undefined, args );
 				}
 			}
 
@@ -227,7 +227,16 @@
 				return true;
 			}
 
-			return args[0];
+			return args[ 0 ];
+		}
+
+		return {
+			removeFilter : removeFilter,
+			applyFilters : applyFilters,
+			addFilter : addFilter,
+			removeAction : removeAction,
+			doAction : doAction,
+			addAction : addAction
 		};
 
 	};

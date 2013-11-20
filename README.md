@@ -17,7 +17,7 @@ API functions can be called via the global `wp.hooks` like this `wp.hooks.addAct
 * `removeAction( 'namespace.identifier' )`
 * `removeFilter( 'namespace.identifier' )`
 * `doAction( 'namespace.identifier', arg1, arg2, moreArgs, finalArg )`
-* `applyFilter( 'namespace.identifier', content )`
+* `applyFilters( 'namespace.identifier', content )`
 
 ### Features
 

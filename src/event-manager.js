@@ -36,12 +36,11 @@
 		 * @param priority Defaults to 10
 		 */
 		function addAction( action, callback, priority ) {
-			if( _validateNamespace( action ) === false || typeof callback !== 'function' ) {
-				return MethodsAvailable;
+			if( typeof action === 'string' && typeof callback === 'function' ) {
+				priority = parseInt( ( priority || 10 ), 10 );
+				_addHook( 'actions', action, callback, priority );
 			}
 
-			priority = parseInt( ( priority || 10 ), 10 );
-			_addHook( 'actions', action, callback, priority );
 			return MethodsAvailable;
 		}
 
@@ -53,11 +52,9 @@
 			var args = Array.prototype.slice.call( arguments );
 			var action = args.shift();
 
-			if( _validateNamespace( action ) === false ) {
-				return MethodsAvailable;
+			if( typeof action === 'string' ) {
+				_runHook( 'actions', action, args );
 			}
-
-			_runHook( 'actions', action, args );
 
 			return MethodsAvailable;
 		}
@@ -68,11 +65,10 @@
 		 * @param action The action to remove
 		 */
 		function removeAction( action ) {
-			if( _validateNamespace( action ) === false ) {
-				return MethodsAvailable;
+			if( typeof action === 'string' ) {
+				_removeHook( 'actions', action );
 			}
 
-			_removeHook( 'actions', action );
 			return MethodsAvailable;
 		}
 
@@ -84,12 +80,11 @@
 		 * @param priority Defaults to 10
 		 */
 		function addFilter( filter, callback, priority ) {
-			if( _validateNamespace( filter ) === false || typeof callback !== 'function' ) {
-				return MethodsAvailable;
+			if( typeof filter === 'string' && typeof callback === 'function' ) {
+				priority = parseInt( ( priority || 10 ), 10 );
+				_addHook( 'filters', filter, callback, priority );
 			}
 
-			priority = parseInt( ( priority || 10 ), 10 );
-			_addHook( 'filters', filter, callback, priority );
 			return MethodsAvailable;
 		}
 
@@ -98,15 +93,14 @@
 		 * the first argument must always be the filter.
 		 */
 		function applyFilters( /* filter, filtered arg, arg2, ... */ ) {
-
 			var args = Array.prototype.slice.call( arguments );
 			var filter = args.shift();
 
-			if( _validateNamespace( filter ) === false ) {
-				return MethodsAvailable;
+			if( typeof filter === 'string' ) {
+				return _runHook( 'filters', filter, args );
 			}
 
-			return _runHook( 'filters', filter, args );
+			return MethodsAvailable;
 		}
 
 		/**
@@ -115,11 +109,10 @@
 		 * @param filter The action to remove
 		 */
 		function removeFilter( filter ) {
-			if( _validateNamespace( filter ) === false ) {
-				return MethodsAvailable;
+			if( typeof filter === 'string') {
+				_removeHook( 'filters', filter );
 			}
 
-			_removeHook( 'filters', filter );
 			return MethodsAvailable;
 		}
 
@@ -134,24 +127,6 @@
 			if( STORAGE[ type ][ hook ] ) {
 				STORAGE[ type ][ hook ] = [];
 			}
-		}
-
-		/**
-		 * Validates that the hook has both a namespace and an identifier.
-		 *
-		 * @param hook The hook we are checking for namespace and identifier for.
-		 * @return {Boolean} False if it does not contain both or is incorrect. True if it has an appropriate namespace & identifier.
-		 * @private
-		 */
-		function _validateNamespace( hook ) {
-			if( typeof hook !== 'string' ) {
-				return false;
-			}
-			var identifier = hook.replace( /^\s+|\s+$/i, '' ).split( '.' );
-			var namespace = identifier.shift();
-			identifier = identifier.join( '.' );
-
-			return ( namespace !== '' && identifier !== '' );
 		}
 
 		/**

@@ -109,3 +109,41 @@ test( 'chain 3 actions with different priorities and run them', function() {
 	equal( window.actionValue, 'bca' );
 	wp.hooks.removeAction( 'test.action' );
 } );
+
+test( 'pass in two arguments to an action', function() {
+	var arg1 = 10,
+		arg2 = 20;
+
+	expect(4);
+
+	wp.hooks.addAction( 'test.action', function( a, b ) {
+		equal( arg1, a );
+		equal( arg2, b );
+	} );
+	wp.hooks.doAction( 'test.action', arg1, arg2 );
+	wp.hooks.removeAction( 'test.action' );
+
+	equal( arg1, 10 );
+	equal( arg2, 20 );
+} );
+
+
+test( 'call action with no hooks', function() {
+	expect(1);
+
+	ok( wp.hooks.doAction( 'test.noHooks' ) );
+} );
+
+test( 'fire action multiple times', function() {
+	var func;
+	expect(2);
+
+	func = function() {
+		ok( true );
+	};
+
+	wp.hooks.addAction( 'test.action', func );
+	wp.hooks.doAction( 'test.action' );
+	wp.hooks.doAction( 'test.action' );
+	wp.hooks.removeAction( 'test.action' );
+} );

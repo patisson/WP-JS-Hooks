@@ -64,10 +64,11 @@
 		 * Removes the specified action if it contains a namespace.identifier & exists.
 		 *
 		 * @param action The action to remove
+		 * @param [callback] Callback function to remove
 		 */
-		function removeAction( action ) {
+		function removeAction( action, callback ) {
 			if( typeof action === 'string' ) {
-				_removeHook( 'actions', action );
+				_removeHook( 'actions', action, callback );
 			}
 
 			return MethodsAvailable;
@@ -109,10 +110,11 @@
 		 * Removes the specified filter if it contains a namespace.identifier & exists.
 		 *
 		 * @param filter The action to remove
+		 * @param [callback] Callback function to remove
 		 */
-		function removeFilter( filter ) {
+		function removeFilter( filter, callback ) {
 			if( typeof filter === 'string') {
-				_removeHook( 'filters', filter );
+				_removeHook( 'filters', filter, callback );
 			}
 
 			return MethodsAvailable;
@@ -125,9 +127,20 @@
 		 * @param hook The hook (namespace.identifier) to remove
 		 * @private
 		 */
-		function _removeHook( type, hook ) {
+		function _removeHook( type, hook, callback ) {
+			var actions, action, index;
 			if( STORAGE[ type ][ hook ] ) {
-				STORAGE[ type ][ hook ] = [];
+				if ( typeof callback === 'undefined' ) {
+					STORAGE[ type ][ hook ] = [];
+				} else {
+					actions = STORAGE[ type ][ hook ];
+					for ( index = 0; index < actions.length; index++ ) {
+						action = actions[ index ];
+						if ( action.callback === callback ) {
+							STORAGE[ type ][ hook ].splice( index, 1 );
+						}
+					}
+				}
 			}
 		}
 

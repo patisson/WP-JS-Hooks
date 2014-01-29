@@ -147,3 +147,22 @@ test( 'fire action multiple times', function() {
 	wp.hooks.doAction( 'test.action' );
 	wp.hooks.removeAction( 'test.action' );
 } );
+
+test( 'fire action using method with context', function() {
+	var obj;
+	expect(1);
+
+	obj = {
+		foo: 10,
+		method: function() {
+			equal( this.foo, 10 );
+		}
+	};
+
+	wp.hooks.addAction( 'test.action', obj.method, 10, obj );
+
+	wp.hooks.doAction( 'test.action' );
+	wp.hooks.removeAction( 'test.action' );
+
+
+} );

@@ -33,7 +33,8 @@
 		 *
 		 * @param action Must contain namespace.identifier
 		 * @param callback Must be a valid callback function before this action is added
-		 * @param priority Defaults to 10
+		 * @param [priority] Defaults to 10
+		 * @param [context] Supply a value to be used for this
 		 */
 		function addAction( action, callback, priority, context ) {
 			if( typeof action === 'string' && typeof callback === 'function' ) {
@@ -77,7 +78,8 @@
 		 *
 		 * @param filter Must contain namespace.identifier
 		 * @param callback Must be a valid callback function before this action is added
-		 * @param priority Defaults to 10
+		 * @param [priority] Defaults to 10
+		 * @param [context] Supply a value to be used for this
 		 */
 		function addFilter( filter, callback, priority, context ) {
 			if( typeof filter === 'string' && typeof callback === 'function' ) {
@@ -136,6 +138,7 @@
 		 * @param hook The hook (namespace.identifier) to add to our event manager
 		 * @param callback The function that will be called when the hook is executed.
 		 * @param priority The priority of this hook. Must be an integer.
+		 * @param [context] A value to be used for this
 		 * @private
 		 */
 		function _addHook( type, hook, callback, priority, context ) {

@@ -33,7 +33,7 @@
 		 *
 		 * @param action Must contain namespace.identifier
 		 * @param callback Must be a valid callback function before this action is added
-		 * @param [priority] Defaults to 10
+		 * @param [priority=10] Used to control when the function is executed in relation to other callbacks bound to the same hook
 		 * @param [context] Supply a value to be used for this
 		 */
 		function addAction( action, callback, priority, context ) {
@@ -78,7 +78,7 @@
 		 *
 		 * @param filter Must contain namespace.identifier
 		 * @param callback Must be a valid callback function before this action is added
-		 * @param [priority] Defaults to 10
+		 * @param [priority=10] Used to control when the function is executed in relation to other callbacks bound to the same hook
 		 * @param [context] Supply a value to be used for this
 		 */
 		function addFilter( filter, callback, priority, context ) {

@@ -33,12 +33,13 @@
 		 *
 		 * @param action Must contain namespace.identifier
 		 * @param callback Must be a valid callback function before this action is added
-		 * @param priority Defaults to 10
+		 * @param [priority=10] Used to control when the function is executed in relation to other callbacks bound to the same hook
+		 * @param [context] Supply a value to be used for this
 		 */
-		function addAction( action, callback, priority ) {
+		function addAction( action, callback, priority, context ) {
 			if( typeof action === 'string' && typeof callback === 'function' ) {
 				priority = parseInt( ( priority || 10 ), 10 );
-				_addHook( 'actions', action, callback, priority );
+				_addHook( 'actions', action, callback, priority, context );
 			}
 
 			return MethodsAvailable;
@@ -77,9 +78,10 @@
 		 *
 		 * @param filter Must contain namespace.identifier
 		 * @param callback Must be a valid callback function before this action is added
-		 * @param priority Defaults to 10
+		 * @param [priority=10] Used to control when the function is executed in relation to other callbacks bound to the same hook
+		 * @param [context] Supply a value to be used for this
 		 */
-		function addFilter( filter, callback, priority ) {
+		function addFilter( filter, callback, priority, context ) {
 			if( typeof filter === 'string' && typeof callback === 'function' ) {
 				priority = parseInt( ( priority || 10 ), 10 );
 				_addHook( 'filters', filter, callback, priority );
@@ -136,12 +138,14 @@
 		 * @param hook The hook (namespace.identifier) to add to our event manager
 		 * @param callback The function that will be called when the hook is executed.
 		 * @param priority The priority of this hook. Must be an integer.
+		 * @param [context] A value to be used for this
 		 * @private
 		 */
-		function _addHook( type, hook, callback, priority ) {
+		function _addHook( type, hook, callback, priority, context ) {
 			var hookObject = {
 				callback : callback,
-				priority : priority
+				priority : priority,
+				context : context
 			};
 
 			// Utilize 'prop itself' : http://jsperf.com/hasownproperty-vs-in-vs-undefined/19
@@ -198,10 +202,10 @@
 
 			for( var i = 0, len = hooks.length; i < len; i++ ) {
 				if( type === 'actions' ) {
-					hooks[ i ].callback.apply( undefined, args );
+					hooks[ i ].callback.apply( hooks[ i ].context, args );
 				}
 				else {
-					args[ 0 ] = hooks[ i ].callback.apply( undefined, args );
+					args[ 0 ] = hooks[ i ].callback.apply( hooks[ i ].context, args );
 				}
 			}
 

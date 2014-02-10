@@ -205,27 +205,23 @@
 		 */
 		function _runHook( type, hook, args ) {
 			var hooks = STORAGE[ type ][ hook ];
-			if( typeof hooks === 'undefined' ) {
-				if( type === 'filters' ) {
-					return args[0];
-				}
-				return false;
+			
+			if ( !hooks ) {
+				return (type === 'filters') ? args[0] : false;
 			}
 
-			for( var i = 0, len = hooks.length; i < len; i++ ) {
-				if( type === 'actions' ) {
-					hooks[ i ].callback.apply( hooks[ i ].context, args );
-				}
-				else {
+			var i = 0, len = hooks.length;
+			if ( type === 'filters' ) {
+				for ( ; i < len; i++ ) {
 					args[ 0 ] = hooks[ i ].callback.apply( hooks[ i ].context, args );
 				}
+			} else {
+				for ( ; i < len; i++ ) {
+					hooks[ i ].callback.apply( hooks[ i ].context, args );
+				}
 			}
 
-			if( type === 'actions' ) {
-				return true;
-			}
-
-			return args[ 0 ];
+			return ( type === 'filters' ) ? args[ 0 ] : true;
 		}
 
 		// return all of the publicly available methods

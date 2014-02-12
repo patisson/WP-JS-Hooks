@@ -127,17 +127,16 @@
 		 * @private
 		 */
 		function _removeHook( type, hook, callback ) {
-			var actions, action, index;
-			if( STORAGE[ type ][ hook ] ) {
-				if ( typeof callback === 'undefined' ) {
-					STORAGE[ type ][ hook ] = [];
-				} else {
-					actions = STORAGE[ type ][ hook ];
-					for ( index = 0; index < actions.length; index++ ) {
-						action = actions[ index ];
-						if ( action.callback === callback ) {
-							STORAGE[ type ][ hook ].splice( index, 1 );
-						}
+			if ( !STORAGE[ type ][ hook ] ) {
+				return;
+			}
+			if ( !callback ) {
+				STORAGE[ type ][ hook ] = [];
+			} else {
+				var subscribers = STORAGE[ type ][ hook ];
+				for ( var i = subscribers.length; i--; ) {
+					if ( subscribers[i].callback === callback ) {
+						subscribers.splice( i, 1 );
 					}
 				}
 			}

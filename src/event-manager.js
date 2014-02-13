@@ -203,20 +203,20 @@
 		 * @private
 		 */
 		function _runHook( type, hook, args ) {
-			var hooks = STORAGE[ type ][ hook ];
+			var handlers = STORAGE[ type ][ hook ];
 			
-			if ( !hooks ) {
+			if ( !handlers ) {
 				return (type === 'filters') ? args[0] : false;
 			}
 
-			var i = 0, len = hooks.length;
+			var i = 0, len = handlers.length;
 			if ( type === 'filters' ) {
 				for ( ; i < len; i++ ) {
-					args[ 0 ] = hooks[ i ].callback.apply( hooks[ i ].context, args );
+					args[ 0 ] = handlers[ i ].callback.apply( handlers[ i ].context, args );
 				}
 			} else {
 				for ( ; i < len; i++ ) {
-					hooks[ i ].callback.apply( hooks[ i ].context, args );
+					handlers[ i ].callback.apply( handlers[ i ].context, args );
 				}
 			}
 

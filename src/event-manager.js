@@ -133,10 +133,10 @@
 			if ( !callback ) {
 				STORAGE[ type ][ hook ] = [];
 			} else {
-				var subscribers = STORAGE[ type ][ hook ];
-				for ( var i = subscribers.length; i--; ) {
-					if ( subscribers[i].callback === callback ) {
-						subscribers.splice( i, 1 );
+				var handlers = STORAGE[ type ][ hook ];
+				for ( var i = handlers.length; i--; ) {
+					if ( handlers[i].callback === callback ) {
+						handlers.splice( i, 1 );
 					}
 				}
 			}

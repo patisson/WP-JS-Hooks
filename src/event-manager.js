@@ -126,7 +126,7 @@
 		 * @param hook The hook (namespace.identifier) to remove
 		 * @private
 		 */
-		function _removeHook( type, hook, callback ) {
+		function _removeHook( type, hook, callback, context ) {
 			if ( !STORAGE[ type ][ hook ] ) {
 				return;
 			}
@@ -134,9 +134,20 @@
 				STORAGE[ type ][ hook ] = [];
 			} else {
 				var handlers = STORAGE[ type ][ hook ];
-				for ( var i = handlers.length; i--; ) {
-					if ( handlers[i].callback === callback ) {
-						handlers.splice( i, 1 );
+				var i;
+				if ( !context ) {
+					for ( i = handlers.length; i--; ) {
+						if ( handlers[i].callback === callback ) {
+							handlers.splice( i, 1 );
+						}
+					}
+				}
+				else {
+					for ( i = handlers.length; i--; ) {
+						var handler = handlers[i];
+						if ( handler.callback === callback && handler.context === context) {
+							handlers.splice( i, 1 );
+						}
 					}
 				}
 			}

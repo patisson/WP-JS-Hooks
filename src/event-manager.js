@@ -1,6 +1,5 @@
 ( function( window, undefined ) {
 	"use strict";
-	var document = window.document;
 
 	/**
 	 * Handles managing all events for whatever you plug it into. Priorities for hooks are based on lowest to highest in
@@ -64,10 +63,11 @@
 		 * Removes the specified action if it contains a namespace.identifier & exists.
 		 *
 		 * @param action The action to remove
+		 * @param [callback] Callback function to remove
 		 */
-		function removeAction( action ) {
+		function removeAction( action, callback ) {
 			if( typeof action === 'string' ) {
-				_removeHook( 'actions', action );
+				_removeHook( 'actions', action, callback );
 			}
 
 			return MethodsAvailable;
@@ -109,10 +109,11 @@
 		 * Removes the specified filter if it contains a namespace.identifier & exists.
 		 *
 		 * @param filter The action to remove
+		 * @param [callback] Callback function to remove
 		 */
-		function removeFilter( filter ) {
+		function removeFilter( filter, callback ) {
 			if( typeof filter === 'string') {
-				_removeHook( 'filters', filter );
+				_removeHook( 'filters', filter, callback );
 			}
 
 			return MethodsAvailable;
@@ -125,9 +126,30 @@
 		 * @param hook The hook (namespace.identifier) to remove
 		 * @private
 		 */
-		function _removeHook( type, hook ) {
-			if( STORAGE[ type ][ hook ] ) {
+		function _removeHook( type, hook, callback, context ) {
+			if ( !STORAGE[ type ][ hook ] ) {
+				return;
+			}
+			if ( !callback ) {
 				STORAGE[ type ][ hook ] = [];
+			} else {
+				var handlers = STORAGE[ type ][ hook ];
+				var i;
+				if ( !context ) {
+					for ( i = handlers.length; i--; ) {
+						if ( handlers[i].callback === callback ) {
+							handlers.splice( i, 1 );
+						}
+					}
+				}
+				else {
+					for ( i = handlers.length; i--; ) {
+						var handler = handlers[i];
+						if ( handler.callback === callback && handler.context === context) {
+							handlers.splice( i, 1 );
+						}
+					}
+				}
 			}
 		}
 
@@ -192,28 +214,24 @@
 		 * @private
 		 */
 		function _runHook( type, hook, args ) {
-			var hooks = STORAGE[ type ][ hook ];
-			if( typeof hooks === 'undefined' ) {
-				if( type === 'filters' ) {
-					return args[0];
-				}
-				return false;
+			var handlers = STORAGE[ type ][ hook ];
+			
+			if ( !handlers ) {
+				return (type === 'filters') ? args[0] : false;
 			}
 
-			for( var i = 0, len = hooks.length; i < len; i++ ) {
-				if( type === 'actions' ) {
-					hooks[ i ].callback.apply( hooks[ i ].context, args );
+			var i = 0, len = handlers.length;
+			if ( type === 'filters' ) {
+				for ( ; i < len; i++ ) {
+					args[ 0 ] = handlers[ i ].callback.apply( handlers[ i ].context, args );
 				}
-				else {
-					args[ 0 ] = hooks[ i ].callback.apply( hooks[ i ].context, args );
+			} else {
+				for ( ; i < len; i++ ) {
+					handlers[ i ].callback.apply( handlers[ i ].context, args );
 				}
 			}
 
-			if( type === 'actions' ) {
-				return true;
-			}
-
-			return args[ 0 ];
+			return ( type === 'filters' ) ? args[ 0 ] : true;
 		}
 
 		// return all of the publicly available methods

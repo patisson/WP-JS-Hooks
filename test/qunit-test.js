@@ -160,9 +160,34 @@ test( 'fire action using method with context', function() {
 	};
 
 	wp.hooks.addAction( 'test.action', obj.method, 10, obj );
-
 	wp.hooks.doAction( 'test.action' );
 	wp.hooks.removeAction( 'test.action' );
 
+} );
+
+test( 'remove specific action callback', function() {
+	expect(1);
+	window.actionValue = '';
+	wp.hooks
+		.addAction( 'test.action', action_a )
+		.addAction( 'test.action', action_b, 2 )
+		.addAction( 'test.action', action_c, 8 );
+
+	wp.hooks.removeAction( 'test.action', action_b );
+	wp.hooks.doAction( 'test.action' );
+	equal( window.actionValue, 'ca' );
+	wp.hooks.removeAction( 'test.action' );
+
+} );
+
+test( 'remove specific filter callback', function() {
+	expect(1);
+	wp.hooks.addFilter( 'test.filter', filter_a )
+		.addFilter( 'test.filter', filter_b, 2 )
+		.addFilter( 'test.filter', filter_c, 8 );
+
+	wp.hooks.removeFilter( 'test.filter', filter_b );
+	equal( wp.hooks.applyFilters( 'test.filter', 'test' ), 'testca' );
+	wp.hooks.removeFilter( 'test.filter' );
 
 } );

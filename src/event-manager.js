@@ -127,14 +127,15 @@
 		 * @private
 		 */
 		function _removeHook( type, hook, callback, context ) {
+			var handlers, handler, i;
+			
 			if ( !STORAGE[ type ][ hook ] ) {
 				return;
 			}
 			if ( !callback ) {
 				STORAGE[ type ][ hook ] = [];
 			} else {
-				var handlers = STORAGE[ type ][ hook ];
-				var i;
+				handlers = STORAGE[ type ][ hook ];
 				if ( !context ) {
 					for ( i = handlers.length; i--; ) {
 						if ( handlers[i].callback === callback ) {
@@ -144,7 +145,7 @@
 				}
 				else {
 					for ( i = handlers.length; i--; ) {
-						var handler = handlers[i];
+						handler = handlers[i];
 						if ( handler.callback === callback && handler.context === context) {
 							handlers.splice( i, 1 );
 						}
@@ -214,19 +215,19 @@
 		 * @private
 		 */
 		function _runHook( type, hook, args ) {
-			var handlers = STORAGE[ type ][ hook ];
+			var handlers = STORAGE[ type ][ hook ], i, len;
 			
 			if ( !handlers ) {
 				return (type === 'filters') ? args[0] : false;
 			}
 
-			var i = 0, len = handlers.length;
+			len = handlers.length;
 			if ( type === 'filters' ) {
-				for ( ; i < len; i++ ) {
+				for ( i = 0; i < len; i++ ) {
 					args[ 0 ] = handlers[ i ].callback.apply( handlers[ i ].context, args );
 				}
 			} else {
-				for ( ; i < len; i++ ) {
+				for ( i = 0; i < len; i++ ) {
 					handlers[ i ].callback.apply( handlers[ i ].context, args );
 				}
 			}

@@ -6,6 +6,8 @@
 	 * that, lowest priority hooks are fired first.
 	 */
 	var EventManager = function() {
+		var slice = Array.prototype.slice;
+		
 		/**
 		 * Maintain a reference to the object scope so our public methods never get confusing.
 		 */
@@ -49,7 +51,7 @@
 		 * that the first argument must always be the action.
 		 */
 		function doAction( /* action, arg1, arg2, ... */ ) {
-			var args = Array.prototype.slice.call( arguments );
+			var args = slice.call( arguments );
 			var action = args.shift();
 
 			if( typeof action === 'string' ) {
@@ -95,7 +97,7 @@
 		 * the first argument must always be the filter.
 		 */
 		function applyFilters( /* filter, filtered arg, arg2, ... */ ) {
-			var args = Array.prototype.slice.call( arguments );
+			var args = slice.call( arguments );
 			var filter = args.shift();
 
 			if( typeof filter === 'string' ) {

@@ -1,7 +1,12 @@
+/* jshint node:true */
+
 module.exports = function(grunt) {
 	grunt.initConfig( {
 		pkg: grunt.file.readJSON('package.json'),
 		jshint : {
+            options: {
+                jshintrc: '.jshintrc'
+            },
 			src: 'src/event-manager.js',
 			gruntfile : 'Gruntfile.js'
 		},

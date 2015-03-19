@@ -1,5 +1,5 @@
 ( function( window, undefined ) {
-	"use strict";
+	'use strict';
 
 	/**
 	 * Handles managing all events for whatever you plug it into. Priorities for hooks are based on lowest to highest in
@@ -84,7 +84,7 @@
 		function addFilter( filter, callback, priority, context ) {
 			if( typeof filter === 'string' && typeof callback === 'function' ) {
 				priority = parseInt( ( priority || 10 ), 10 );
-				_addHook( 'filters', filter, callback, priority );
+				_addHook( 'filters', filter, callback, priority, context );
 			}
 
 			return MethodsAvailable;
